@@ -1,3 +1,6 @@
 db-data/
 src/logs/
 .idea/
+.vscode/
+.venv
+__pycache__/
