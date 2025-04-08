@@ -7,6 +7,7 @@ services:
       - "${PWD}/src:/opt/src/"
     depends_on:
       - postgres
+      
   postgres:
     image: postgres:11
     restart: unless-stopped

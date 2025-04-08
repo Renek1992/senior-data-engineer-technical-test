@@ -2,25 +2,38 @@
 
 # HOME := /opt/src/
 
+# Logging helper
+define log
+	@echo "[$(shell date '+%Y-%m-%d %H:%M:%S')] $(1)"
+endef
+
+
 reset-db: down set-permissions
-	rm -rfv db-data
+	$(call log,"Resetting database: removing db-data")
+	@rm -rfv db-data
 
 build: reset-db
-	docker-compose down
-	docker-compose build --no-cache
+	$(call log,"Building Docker containers with no cache")
+	@docker compose down
+	@docker compose build --no-cache
 
 set-permissions:
-	mkdir -p db-data
-	chmod -R 777 db-data
+	$(call log,"Setting permissions for db-data directory")
+	@mkdir -p db-data
+	@chmod -R 777 db-data
 
 up: set-permissions
-	docker-compose up -d
+	$(call log,"Starting containers")
+	@docker compose up -d
 
 down:
-	docker-compose down
+	$(call log,"Stopping containers")
+	@docker compose down
 
 shell:
-	docker-compose exec core bash -c "cd /opt/src; exec bash"
+	$(call log,"Opening shell in core container")
+	@docker compose exec core bash -c "cd /opt/src; exec bash"
 
 postgres-shell:
-	docker-compose exec postgres bash
+	$(call log,"Opening shell in postgres container")
+	@docker compose exec postgres bash
