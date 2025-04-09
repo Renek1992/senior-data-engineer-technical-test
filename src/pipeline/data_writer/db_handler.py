@@ -5,9 +5,9 @@ Module to handle database operations for the pipeline.
 import polars as pl
 from psycopg2 import sql
 from logging import Logger
-from shared.db.db_cnx import DatabaseConnector
-from shared.db.db_operations import DatabaseOperations
-from shared.common.types import AppConfig
+from src.shared.db.db_cnx import DatabaseConnector
+from src.shared.db.db_operations import DatabaseOperations
+from src.shared.common.types import AppConfig
 from datetime import datetime
 
 

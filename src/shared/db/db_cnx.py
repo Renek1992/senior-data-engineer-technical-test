@@ -5,7 +5,7 @@ This module contains the DatabaseConnector class, which is responsible for estab
 import psycopg2
 from logging import Logger
 from psycopg2.extras import RealDictCursor
-from shared.common.types import AppConfig
+from src.shared.common.types import AppConfig
 
 
 class DatabaseConnector:

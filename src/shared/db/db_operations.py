@@ -4,7 +4,7 @@ This module contains classes and functions to perform various database operation
 
 from logging import Logger
 from typing import Any
-from shared.db.db_cnx import DatabaseConnector
+from src.shared.db.db_cnx import DatabaseConnector
 
 
 class DatabaseOperations:

@@ -5,12 +5,12 @@ Module to delegate file handling tasks to specific processors based on file type
 import os
 import polars as pl
 from logging import Logger
-from shared.common.types import AppConfig
+from src.shared.common.types import AppConfig
 from watchdog.events import FileSystemEventHandler
-from .processors.csv_processor import CSVProcessor
-from .processors.json_processor import JSONProcessor
-from .processors.base import FileProcessor
-from ..data_writer.db_handler import DatabaseHandler
+from src.pipeline.data_reader.processors.csv_processor import CSVProcessor
+from src.pipeline.data_reader.processors.json_processor import JSONProcessor
+from src.pipeline.data_reader.processors.base import FileProcessor
+from src.pipeline.data_writer.db_handler import DatabaseHandler
 
 class FileProcessorContext:
     def __init__(self, strategy: FileProcessor):

@@ -15,7 +15,7 @@ logger = PythonLogger.get_logger(config=app_config)
 
 if __name__ == "__main__":
     # Directory to watch for file events
-    directory_to_watch = "./landed_files/"
+    directory_to_watch = "src/landed_files/"
 
     # Initialize the data pipeline
     pipeline = DataPipeline(
