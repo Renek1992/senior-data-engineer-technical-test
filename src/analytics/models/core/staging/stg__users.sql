@@ -5,12 +5,12 @@ with source as (
 renamed as (
     select
         id as user_id,
-        lower(trim(name)) as user_name,
-        is_test_user,
-        upper(currency_code) as currency_code,
-        created_at as user_created_at
+        lower(trim("Name")) as user_name,           -- quoted correctly
+        "IsTestUser" as is_test_user,               -- quoted correctly
+        upper("CurrencyCode") as currency_code,     -- quoted correctly
+        "CreatedAt" as user_created_at              -- quoted correctly
     from source
-    where not is_test_user  -- remove internal test accounts
+    where not "IsTestUser"  -- also fix here
 )
 
 select * from renamed

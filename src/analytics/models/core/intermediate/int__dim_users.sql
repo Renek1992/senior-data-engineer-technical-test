@@ -1,9 +1,9 @@
 with users as (
-    select * from {{ ref('stg_users') }}
+    select * from {{ ref('stg__users') }}
 ),
 
 addresses as (
-    select * from {{ ref('stg_user_address') }}
+    select * from {{ ref('stg__user_address') }}
 )
 
 select

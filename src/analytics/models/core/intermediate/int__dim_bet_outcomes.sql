@@ -1,1 +1,1 @@
-select * from {{ ref('stg_bet_outcomes') }}
+select * from {{ ref('stg__bet_outcomes') }}

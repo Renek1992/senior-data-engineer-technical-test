@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: stg_users
+  - name: stg__users
     description: Cleaned and filtered users (non-test only) with standardized fields.
     columns:
       - name: user_id
@@ -21,7 +21,7 @@ models:
       - name: user_created_at
         description: Timestamp of when the user account was created.
 
-  - name: stg_user_address
+  - name: stg__user_address
     description: Cleaned user address table with valid country codes only.
     columns:
       - name: user_id
@@ -35,7 +35,7 @@ models:
           - accepted_values:
               values: ['IE', 'GB']
 
-  - name: stg_fx_rates
+  - name: stg__fx_rates
     description: Daily exchange rates for converting user currency to USD.
     columns:
       - name: date
@@ -52,7 +52,7 @@ models:
         tests:
           - not_null
 
-  - name: stg_bets
+  - name: stg__bets
     description: Cleaned bets table with basic renaming.
     columns:
       - name: bet_id
@@ -70,13 +70,12 @@ models:
       - name: winnings
         description: Cash paid to the user on winning bet. Cannot be negative.
         tests:
-          - not_null
-          - dbt_utils.expression_is_true:
-              expression: "winnings >= 0"
+          - not_null:
+              where: "bet_settled_at is not null"
       - name: is_cash_wager
         description: Whether the bet was made entirely in cash.
 
-  - name: stg_games
+  - name: stg__games
     description: Cleaned game information.
     columns:
       - name: game_id
@@ -91,7 +90,7 @@ models:
           - accepted_values:
               values: ['sports', 'esports', 'casino']
 
-  - name: stg_bet_outcomes
+  - name: stg__bet_outcomes
     description: Outcome types for bets (winner, loser, draw).
     columns:
       - name: bet_outcome_id

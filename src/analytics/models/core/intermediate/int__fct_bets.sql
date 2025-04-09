@@ -1,13 +1,13 @@
 with bets as (
-    select * from {{ ref('stg_bets') }}
+    select * from {{ ref('stg__bets') }}
 ),
 
 users as (
-    select user_id, currency_code from {{ ref('dim_user') }}
+    select user_id, currency_code from {{ ref('int__dim_users') }}
 ),
 
 fx_rates as (
-    select * from {{ ref('stg_fx_rates') }}
+    select * from {{ ref('stg__fx_rates') }}
 ),
 
 -- add fx rate for wager date
@@ -15,7 +15,7 @@ bets_with_currency as (
     select
         b.*,
         u.currency_code,
-        coalesce(b.settled_at, b.bet_placed_at)::date as fx_date
+        coalesce(b.bet_settled_at, b.bet_placed_at)::date as fx_date
     from bets b
     left join users u on b.user_id = u.user_id
 ),
@@ -28,8 +28,8 @@ bets_with_fx as (
         b.winnings * fx.rate as winnings_usd
     from bets_with_currency b
     left join fx_rates fx
-      on fx.currency_code = b.currency_code
-     and fx.date = b.fx_date
+        on fx.currency_code = b.currency_code
+        and fx.date = date_trunc('day', b.bet_settled_at)
 )
 
 select

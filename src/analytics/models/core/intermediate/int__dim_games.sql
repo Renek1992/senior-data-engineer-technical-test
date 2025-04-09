@@ -3,4 +3,4 @@ select
     game_name,
     vertical,
     game_created_at
-from {{ ref('stg_games') }}
+from {{ ref('stg__games') }}
