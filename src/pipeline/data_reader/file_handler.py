@@ -1,6 +1,7 @@
 """
 Module to delegate file handling tasks to specific processors based on file type.
 """
+
 import os
 import polars as pl
 from logging import Logger
@@ -10,7 +11,6 @@ from processors.json_processor import JSONProcessor
 from processors.base import FileProcessor
 
 
-
 class FileProcessorContext:
     def __init__(self, strategy: FileProcessor):
         self._strategy = strategy
@@ -18,8 +18,6 @@ class FileProcessorContext:
     def execute(self, file_path: str) -> pl.DataFrame:
         df = self._strategy.process(file_path)
         return df
-
-
 
 
 class FileEventHandler(FileSystemEventHandler):
@@ -57,7 +55,7 @@ class FileEventHandler(FileSystemEventHandler):
             if context:
                 df = context.execute(event.src_path)
                 return df
-            
+
     def on_deleted(self, event):
         """
         Handler for file deletion events.

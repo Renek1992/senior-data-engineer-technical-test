@@ -1,44 +1,43 @@
 """
 Main pipeline module for handling file events and processing data.
 """
+
 import time
 from logging import Logger
 import polars as pl
-from shared.db import get_session
 from data_reader.file_handler import FileEventHandler
+from data_writer.db_handler import DatabaseHandler
 from watchdog.observers import Observer
+from shared.common.types import AppConfig
+
 
 class DataPipeline:
     """
     DataPipeline class handles the file detection, processing, and ingestion
     into a Postgres database based on file events.
     """
-    def __init__(self, directory: str, logger: Logger):
+
+    def __init__(self, directory: str, logger: Logger, config: AppConfig):
         """
         Initialize the data pipeline.
         :param directory: The directory to watch for new or modified files.
         :param logger: Logger instance for logging.
         """
         self.directory = directory
-        self.logger = logger or logging.getLogger("DataPipeline")
-        self.event_handler = FileEventHandler(self.logger)
+        self.event_handler = FileEventHandler(logger=logger)
+        self.db_handler = DatabaseHandler(logger=logger, config=config)
 
     def _process_and_store(self, df: pl.DataFrame):
         """
         Helper function to handle processing and storing the data in the DB.
         :param df: The DataFrame to process.
         """
-        # Convert Polars DataFrame to Pandas (if needed for SQLAlchemy)
-        pandas_df = df.to_pandas()
-
         try:
-            session = get_session()
-            pandas_df.to_sql('your_table_name', session.bind, if_exists='append', index=False)
-            self.logger.info(f"Successfully ingested data to Postgres.")
+            # self.db_handler.run(data=df, truncate=True)
+            print("fake runnning db handler")
         except Exception as e:
-            self.logger.error(f"Error storing data in DB: {e}")
-        finally:
-            session.close()
+            self.logger.error(f"Error processing and storing data: {e}")
+            raise
 
     def process_file(self, file_path: str):
         """
@@ -47,7 +46,7 @@ class DataPipeline:
         """
         self.logger.info(f"Processing file: {file_path}")
         context = self.event_handler._get_processor(file_path)
-        
+
         if context:
             df = context.execute(file_path)  # File processing
             if df is not None:

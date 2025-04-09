@@ -1,6 +1,7 @@
 import polars as pl
 from base import FileProcessor
 
+
 class CSVProcessor(FileProcessor):
     def process(self, file_path: str) -> None:
         try:

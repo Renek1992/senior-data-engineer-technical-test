@@ -11,7 +11,8 @@ from shared.common.utils import LogFormatter
 
 
 class PythonLogger:
-    def get_logger(name: str, config: AppConfig) -> Logger:
+    def get_logger(config: AppConfig) -> Logger:
+        name = config.app_name
         log_handler = logging.StreamHandler(stream=sys.stdout)
         logger = logging.getLogger(name)
 

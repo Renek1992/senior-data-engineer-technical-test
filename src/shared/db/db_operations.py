@@ -1,6 +1,7 @@
 """
 This module contains classes and functions to perform various database operations.
 """
+
 from logging import Logger
 from typing import Any
 from shared.db.db_cnx import DatabaseConnector
@@ -19,3 +20,4 @@ class DatabaseOperations:
             if cursor.description:  # If the query returns data
                 return cursor.fetchall()
             self.db_connector.connection.commit()
+        self.db_connector.close()

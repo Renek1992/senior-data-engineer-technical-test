@@ -24,7 +24,7 @@ class LocalConfig(ConfigFactory):
             environment=os.environ.get("ENVIRONMENT"),
             log_level=os.environ.get("LOG_LEVEL"),
             app_name=os.environ.get("APP_NAME"),
-            postgres_url=os.environ.get("POSTGRES_URL")
+            postgres_url=f"postgres://{os.environ.get('POSTGRES_USER')}:{os.environ.get('POSTGRES_PASSWORD')}@{os.environ.get('POSTGRES_HOST')}:{os.environ.get('POSTGRES_PORT')}",
         )
 
 
@@ -32,7 +32,6 @@ class LiveConfig(ConfigFactory):
     def create_config(self) -> AppConfig:
         print("Loading LocalConfig...")
         raise NotImplementedError("LiveConfig is not implemented yet.")
-
 
 
 def load_config() -> AppConfig:
