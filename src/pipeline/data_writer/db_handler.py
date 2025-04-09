@@ -39,26 +39,28 @@ class DatabaseHandler:
         :param truncate: Boolean flag to truncate the table before writing.
         """
         try:
-            
             # Convert Polars DataFrame to list of tuples
             columns = data.columns
             data = self._to_tuples(data)
             # remove NULL values from the data to make it compatible with Postgres
-            cleaned_data = [tuple(None if item == 'NULL' else item for item in tup) for tup in data]
+            cleaned_data = [
+                tuple(None if item == "NULL" else item for item in tup) for tup in data
+            ]
 
             if truncate:
-                self.db_operations.execute_query(query="TRUNCATE TABLE {schema}.{table}".format(
-                    schema='raw',
-                    table='bet'
-                ))
+                self.db_operations.execute_query(
+                    query="TRUNCATE TABLE {schema}.{table}".format(
+                        schema="raw", table="bet"
+                    )
+                )
 
             # Build the insert query
             query = sql.SQL("""
                 INSERT INTO {schema}.{table} ({columns})
                 VALUES ({values})
             """).format(
-                schema=sql.Identifier('raw'),
-                table=sql.Identifier('bet'),
+                schema=sql.Identifier("raw"),
+                table=sql.Identifier("bet"),
                 columns=sql.SQL(", ").join(map(sql.Identifier, columns)),
                 values=sql.SQL(", ").join([sql.Placeholder()] * len(columns)),
             )

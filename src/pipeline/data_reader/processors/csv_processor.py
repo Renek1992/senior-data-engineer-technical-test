@@ -1,6 +1,7 @@
 """
 This module defines a CSVProcessor class that reads CSV files using the Polars library.
 """
+
 import polars as pl
 from .base import FileProcessor
 

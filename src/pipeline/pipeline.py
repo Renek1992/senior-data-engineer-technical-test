@@ -27,7 +27,6 @@ class DataPipeline:
         self.config = config
         self.directory = directory
 
-
     def run(self):
         """
         Start the pipeline, monitor the directory, and process files.

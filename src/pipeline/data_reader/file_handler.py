@@ -12,6 +12,7 @@ from src.pipeline.data_reader.processors.json_processor import JSONProcessor
 from src.pipeline.data_reader.processors.base import FileProcessor
 from src.pipeline.data_writer.db_handler import DatabaseHandler
 
+
 class FileProcessorContext:
     def __init__(self, strategy: FileProcessor):
         self._strategy = strategy
@@ -60,7 +61,7 @@ class FileEventHandler(FileSystemEventHandler):
             if context:
                 df = context.execute(event.src_path)
                 db_handler = DatabaseHandler(logger=self.logger, config=self.config)
-                db_handler.run(data=df, truncate=True)         
+                db_handler.run(data=df, truncate=True)
 
     def on_deleted(self, event):
         """

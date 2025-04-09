@@ -9,9 +9,10 @@ from unittest.mock import MagicMock
 from src.shared.telemetry.logging import PythonLogger
 
 
-@pytest.fixture(name="mock_config") 
+@pytest.fixture(name="mock_config")
 def mock_config():
     return MagicMock(log_level=logging.INFO, app_name="test_logger")
+
 
 def describe_logging():
     def test_get_logger(mock_config: MagicMock):

@@ -1,6 +1,7 @@
 """
 main entry point for the data pipeline application.
 """
+
 from dotenv import load_dotenv
 from config import load_config
 from shared.telemetry.logging import PythonLogger
