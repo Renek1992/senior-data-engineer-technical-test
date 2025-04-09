@@ -1,0 +1,76 @@
+version: 2
+
+models:
+  - name: dim_user
+    description: Dimension table for users, joined with country and currency data.
+    columns:
+      - name: user_id
+        tests:
+          - unique
+          - not_null
+      - name: user_name
+        description: Cleaned and lowercase user name.
+      - name: country_code
+        description: Country of the user (IE or GB).
+      - name: currency_code
+        description: Currency code (EUR or GBP).
+      - name: user_created_at
+        description: Timestamp the user account was created.
+
+  - name: dim_game
+    description: Dimension table for games that can be bet on.
+    columns:
+      - name: game_id
+        tests:
+          - unique
+          - not_null
+      - name: game_name
+      - name: vertical
+        tests:
+          - accepted_values:
+              values: ['sports', 'esports', 'casino']
+      - name: game_created_at
+
+  - name: dim_bet_outcome
+    description: Lookup table for outcomes of bets.
+    columns:
+      - name: bet_outcome_id
+        tests:
+          - unique
+          - not_null
+      - name: outcome
+        tests:
+          - accepted_values:
+              values: ['winner', 'loser', 'draw']
+
+  - name: fct_bets
+    description: Fact table containing individual bets and their converted USD values.
+    columns:
+      - name: bet_id
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: game_id
+        tests:
+          - not_null
+      - name: bet_outcome_id
+        description: Nullable until settled.
+      - name: wager
+        description: Original wager in account currency.
+      - name: winnings
+        description: Original winnings in account currency.
+      - name: wager_usd
+        description: Wager amount converted to USD.
+        tests:
+          - not_null
+      - name: winnings_usd
+        description: Winnings amount converted to USD.
+        tests:
+          - not_null
+      - name: bet_placed_at
+        tests:
+          - not_null
+      - name: bet_settled_at

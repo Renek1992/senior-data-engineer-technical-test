@@ -1,0 +1,104 @@
+version: 2
+
+models:
+  - name: stg_users
+    description: Cleaned and filtered users (non-test only) with standardized fields.
+    columns:
+      - name: user_id
+        description: Unique ID of the user.
+        tests:
+          - unique
+          - not_null
+      - name: user_name
+        description: First name of the user.
+      - name: is_test_user
+        description: Whether the account is a test account.
+      - name: currency_code
+        description: Account currency - either GBP or EUR.
+        tests:
+          - accepted_values:
+              values: ['EUR', 'GBP']
+      - name: user_created_at
+        description: Timestamp of when the user account was created.
+
+  - name: stg_user_address
+    description: Cleaned user address table with valid country codes only.
+    columns:
+      - name: user_id
+        tests:
+          - not_null
+      - name: address
+        description: Street address of the user.
+      - name: country_code
+        description: Country code of user.
+        tests:
+          - accepted_values:
+              values: ['IE', 'GB']
+
+  - name: stg_fx_rates
+    description: Daily exchange rates for converting user currency to USD.
+    columns:
+      - name: date
+        description: FX rate date.
+        tests:
+          - not_null
+      - name: currency_code
+        description: Currency being converted (EUR or GBP).
+        tests:
+          - accepted_values:
+              values: ['EUR', 'GBP']
+      - name: rate
+        description: Conversion rate to USD.
+        tests:
+          - not_null
+
+  - name: stg_bets
+    description: Cleaned bets table with basic renaming.
+    columns:
+      - name: bet_id
+        description: Unique identifier of the bet.
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        tests:
+          - not_null
+      - name: wager
+        description: Amount of money wagered.
+        tests:
+          - not_null
+      - name: winnings
+        description: Cash paid to the user on winning bet. Cannot be negative.
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "winnings >= 0"
+      - name: is_cash_wager
+        description: Whether the bet was made entirely in cash.
+
+  - name: stg_games
+    description: Cleaned game information.
+    columns:
+      - name: game_id
+        tests:
+          - unique
+          - not_null
+      - name: game_name
+        description: Display name of the game.
+      - name: vertical
+        description: Type of product vertical (sports, esports, or casino).
+        tests:
+          - accepted_values:
+              values: ['sports', 'esports', 'casino']
+
+  - name: stg_bet_outcomes
+    description: Outcome types for bets (winner, loser, draw).
+    columns:
+      - name: bet_outcome_id
+        tests:
+          - unique
+          - not_null
+      - name: outcome
+        tests:
+          - accepted_values:
+              values: ['winner', 'loser', 'draw']
