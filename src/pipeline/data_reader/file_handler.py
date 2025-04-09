@@ -24,7 +24,7 @@ class FileProcessorContext:
 
 class FileEventHandler(FileSystemEventHandler):
     def __init__(self, logger: Logger):
-        self.logger = logger
+        self.logger = logger.getChild("FileEventHandler")
         self.strategies = {
             ".csv": CSVProcessor(),
             ".json": JSONProcessor(),
