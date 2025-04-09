@@ -39,29 +39,37 @@ class DatabaseHandler:
         :param truncate: Boolean flag to truncate the table before writing.
         """
         try:
+            
             # Convert Polars DataFrame to list of tuples
-            data = self._df_to_tuples(data)
+            columns = data.columns
+            data = self._to_tuples(data)
+            # remove NULL values from the data to make it compatible with Postgres
+            cleaned_data = [tuple(None if item == 'NULL' else item for item in tup) for tup in data]
 
             if truncate:
-                self.db_operations.execute_query(query="TRUNCATE TABLE core.bets")
+                self.db_operations.execute_query(query="TRUNCATE TABLE {schema}.{table}".format(
+                    schema='raw',
+                    table='bet'
+                ))
 
             # Build the insert query
             query = sql.SQL("""
-                INSERT INTO {table} ({columns})
+                INSERT INTO {schema}.{table} ({columns})
                 VALUES ({values})
             """).format(
-                table=sql.Identifier("core.bets"),
-                columns=sql.SQL(", ").join(map(sql.Identifier, data.columns)),
-                values=sql.SQL(", ").join([sql.Placeholder()] * len(data.columns)),
+                schema=sql.Identifier('raw'),
+                table=sql.Identifier('bet'),
+                columns=sql.SQL(", ").join(map(sql.Identifier, columns)),
+                values=sql.SQL(", ").join([sql.Placeholder()] * len(columns)),
             )
 
             # Insert data in batch
-            for row in data:
+            for row in cleaned_data:
                 # Ensure datetime objects are passed as datetime, not as strings
                 row = tuple([x if not isinstance(x, datetime) else x for x in row])
                 self.db_operations.execute_query(query, params=row)
 
-            self.logger.info(f"Successfully wrote {len(data)} rows to core.bets.")
+            self.logger.info(f"Successfully wrote {len(cleaned_data)} rows to raw.bet.")
         except Exception as e:
             self.logger.error(f"Error writing DataFrame to Postgres: {e}")
             raise

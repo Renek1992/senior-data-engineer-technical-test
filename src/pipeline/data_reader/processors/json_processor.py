@@ -1,6 +1,7 @@
-import polars as pl
-from shared.db import get_session
-from base import FileProcessor
+"""
+This module defines a JSONProcessor class that reads CSV files using the Polars library.
+"""
+from .base import FileProcessor
 
 
 class JSONProcessor(FileProcessor):

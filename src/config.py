@@ -24,7 +24,7 @@ class LocalConfig(ConfigFactory):
             environment=os.environ.get("ENVIRONMENT"),
             log_level=os.environ.get("LOG_LEVEL"),
             app_name=os.environ.get("APP_NAME"),
-            postgres_url=f"postgres://{os.environ.get('POSTGRES_USER')}:{os.environ.get('POSTGRES_PASSWORD')}@{os.environ.get('POSTGRES_HOST')}:{os.environ.get('POSTGRES_PORT')}",
+            postgres_url=f"postgres://{os.environ.get('POSTGRES_USER')}:{os.environ.get('POSTGRES_PASSWORD')}@{os.environ.get('POSTGRES_HOST')}:{os.environ.get('POSTGRES_PORT')}/analytics",
         )
 
 
@@ -36,6 +36,7 @@ class LiveConfig(ConfigFactory):
 
 def load_config() -> AppConfig:
     env = os.environ.get("ENVIRONMENT")
+    print(env)
     if env == "local":
         return LocalConfig().create_config()
     else:

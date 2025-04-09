@@ -5,11 +5,12 @@ Module to delegate file handling tasks to specific processors based on file type
 import os
 import polars as pl
 from logging import Logger
+from shared.common.types import AppConfig
 from watchdog.events import FileSystemEventHandler
-from processors.csv_processor import CSVProcessor
-from processors.json_processor import JSONProcessor
-from processors.base import FileProcessor
-
+from .processors.csv_processor import CSVProcessor
+from .processors.json_processor import JSONProcessor
+from .processors.base import FileProcessor
+from ..data_writer.db_handler import DatabaseHandler
 
 class FileProcessorContext:
     def __init__(self, strategy: FileProcessor):
@@ -21,7 +22,8 @@ class FileProcessorContext:
 
 
 class FileEventHandler(FileSystemEventHandler):
-    def __init__(self, logger: Logger):
+    def __init__(self, logger: Logger, config: AppConfig):
+        self.config = config
         self.logger = logger.getChild("FileEventHandler")
         self.strategies = {
             ".csv": CSVProcessor(),
@@ -41,20 +43,24 @@ class FileEventHandler(FileSystemEventHandler):
         Handler for file modification events.
         """
         if not event.is_directory:
+            self.logger.info(f"File Modification detected: {event.src_path}")
             context = self._get_processor(event.src_path)
             if context:
                 df = context.execute(event.src_path)
-                return df
+                db_handler = DatabaseHandler(logger=self.logger, config=self.config)
+                db_handler.run(data=df, truncate=True)
 
     def on_created(self, event):
         """
         Handler for file creation events.
         """
         if not event.is_directory:
+            self.logger.info(f"File Creation detected: {event.src_path}")
             context = self._get_processor(event.src_path)
             if context:
                 df = context.execute(event.src_path)
-                return df
+                db_handler = DatabaseHandler(logger=self.logger, config=self.config)
+                db_handler.run(data=df, truncate=True)         
 
     def on_deleted(self, event):
         """
