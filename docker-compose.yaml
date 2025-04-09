@@ -1,12 +1,12 @@
 services:
-  # core:
-  #   build:
-  #     dockerfile: ./Dockerfile
-  #   tty: true
-  #   volumes:
-  #     - "${PWD}/src:/opt/src/"
-  #   depends_on:
-  #     - postgres
+  core:
+    build:
+      dockerfile: ./Dockerfile
+    tty: true
+    volumes:
+      - "${PWD}/src:/opt/src/"
+    depends_on:
+      - postgres
       
   postgres:
     image: postgres:11
@@ -15,12 +15,12 @@ services:
        - "${PWD}/db-data:/var/lib/postgresql/data"
        - "./init_scripts/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql"
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 10s
       retries: 10
       start_period: 10s
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}

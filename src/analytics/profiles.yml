@@ -4,8 +4,8 @@ analytics:
     dev:
       type: postgres
       host: postgres
-      user: postgres
-      password: postgres
-      port: 5432
+      user: ${POSTGRES_USER}
+      password: ${POSTGRES_PASSWORD}
+      port: ${POSTGRES_PORT}
       dbname: analytics
       schema: core
