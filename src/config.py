@@ -8,7 +8,7 @@ Config needs to be expanded if more services are being added and secrets need to
 
 import os
 from abc import ABC, abstractmethod
-from .shared.common.types import AppConfig
+from src.shared.common.types import AppConfig
 
 
 class ConfigFactory(ABC):

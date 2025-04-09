@@ -6,8 +6,8 @@ import sys
 
 import logging
 from logging import Logger
-from shared.common.types import AppConfig
-from shared.common.utils import LogFormatter
+from src.shared.common.types import AppConfig
+from src.shared.common.utils import LogFormatter
 
 
 class PythonLogger:
